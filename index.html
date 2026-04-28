@@ -66,19 +66,16 @@
     gap: 10px;
   }
 
-  .logo-icon {
+  .channel-icon-img {
     width: 34px;
     height: 34px;
-    background: linear-gradient(135deg, #0052cc, #00a3ff);
     border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 800;
-    font-size: 13px;
-    letter-spacing: -0.5px;
-    flex-shrink: 0;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .channel-icon-img:hover {
+    transform: scale(1.05);
   }
 
   .logo-name {
@@ -626,7 +623,10 @@
 
 <header>
   <div class="logo">
-    <div class="logo-icon">SF</div>
+    <img src="https://yt3.googleusercontent.com/SxVC9gEFqPmf13Rm7JRqmrY10uT0PeN2_gT6YmH6tx1UoSr0P6tPJ8AgsmK0gjCIk27VCXwynA=s160-c-k-c0x00ffffff-no-rj" 
+         alt="Salesforce Zone YouTube Channel" 
+         class="channel-icon-img"
+         id="channelIconBtn">
     <div class="logo-name">Salesforce<span class="zone-green">Zone</span></div>
   </div>
   <div class="header-right">
@@ -640,7 +640,7 @@
     </div>
     <button class="mock-btn" id="openMockModalBtn">
       <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-      <span>Contact for Mock Interview</span>
+      <span>Contact for FREE Mock Interview</span>
     </button>
   </div>
 </header>
@@ -716,7 +716,6 @@
     </div>
   </div>
 
-  <!-- ONLY TOP navigation buttons (Previous/Next above question) -->
   <div class="nav-top-row">
     <button class="nav-btn-small" id="topPrevBtn" onclick="go(-1)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
@@ -1076,16 +1075,20 @@ const youtubeModal = document.getElementById('youtubeModal');
 const youtubeIconBtn = document.getElementById('youtubeIconBtn');
 const closeYoutubeModalBtn = document.getElementById('closeYoutubeModalBtn');
 const subscribeBtn = document.getElementById('subscribeBtn');
+const channelIconBtn = document.getElementById('channelIconBtn');
 
-youtubeIconBtn.addEventListener('click', (e) => {
-  e.preventDefault();
+function openYoutubeModal(e) {
+  if (e) e.preventDefault();
   youtubeModal.classList.add('active');
-});
+}
 
+youtubeIconBtn.addEventListener('click', openYoutubeModal);
+if (channelIconBtn) {
+  channelIconBtn.addEventListener('click', openYoutubeModal);
+}
 closeYoutubeModalBtn.addEventListener('click', () => {
   youtubeModal.classList.remove('active');
 });
-
 youtubeModal.addEventListener('click', (e) => {
   if (e.target === youtubeModal) {
     youtubeModal.classList.remove('active');
