@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salesforce Zone</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f4ff;
+    --white: #ffffff;
+    --surface: #f8faff;
+    --border: #e2e8f5;
+    --accent: #0052cc;
+    --accent-light: #e8f0ff;
+    --accent2: #00a3ff;
+    --basic: #059669;
+    --basic-bg: #ecfdf5;
+    --basic-border: #a7f3d0;
+    --inter: #d97706;
+    --inter-bg: #fffbeb;
+    --inter-border: #fde68a;
+    --adv: #dc2626;
+    --adv-bg: #fef2f2;
+    --adv-border: #fecaca;
+    --text: #0f172a;
+    --text-2: #334155;
+    --text-muted: #64748b;
+    --code-bg: #0d1b35;
+    --code-border: #1e3a6e;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,82,204,0.07);
+    --shadow-lg: 0 8px 32px rgba(0,82,204,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 1px 0 var(--border), 0 2px 8px rgba(0,82,204,0.06);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, #0052cc, #00a3ff);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+
+  .logo-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .logo-name span { color: var(--accent); }
+
+  .header-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-light);
+    border: 1px solid #c7d9ff;
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── PAGE ── */
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 28px 16px 48px;
+  }
+
+  /* ── CONCEPT PILLS ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .concept-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .concept-pill {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .concept-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .concept-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,82,204,0.25);
+  }
+
+  /* ── CATEGORY TABS ── */
+  .cat-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .cat-tab {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .cat-tab:hover { box-shadow: var(--shadow); }
+
+  .cat-tab .cat-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+
+  .cat-tab .cat-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .cat-tab[data-cat="basic"].active {
+    border-color: var(--basic);
+    background: var(--basic-bg);
+  }
+  .cat-tab[data-cat="basic"].active .cat-label { color: var(--basic); }
+  .cat-tab[data-cat="basic"].active .cat-count {
+    background: var(--basic-border);
+    color: var(--basic);
+  }
+
+  .cat-tab[data-cat="intermediate"].active {
+    border-color: var(--inter);
+    background: var(--inter-bg);
+  }
+  .cat-tab[data-cat="intermediate"].active .cat-label { color: var(--inter); }
+  .cat-tab[data-cat="intermediate"].active .cat-count {
+    background: var(--inter-border);
+    color: var(--inter);
+  }
+
+  .cat-tab[data-cat="advanced"].active {
+    border-color: var(--adv);
+    background: var(--adv-bg);
+  }
+  .cat-tab[data-cat="advanced"].active .cat-label { color: var(--adv); }
+  .cat-tab[data-cat="advanced"].active .cat-count {
+    background: var(--adv-border);
+    color: var(--adv);
+  }
+
+  /* ── QUESTION CARD ── */
+  .q-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 20px;
+    animation: pop 0.25s ease;
+  }
+
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-stripe {
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: background 0.3s;
+  }
+  .q-stripe.basic { background: linear-gradient(90deg, var(--basic), #34d399); }
+  .q-stripe.intermediate { background: linear-gradient(90deg, var(--inter), #fbbf24); }
+  .q-stripe.advanced { background: linear-gradient(90deg, var(--adv), #f87171); }
+
+  .q-body { padding: 28px 28px 24px; }
+
+  .q-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 8px;
+  }
+
+  .q-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .q-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  .q-badge.basic  { background: var(--basic-bg);  color: var(--basic); border: 1px solid var(--basic-border); }
+  .q-badge.intermediate { background: var(--inter-bg); color: var(--inter); border: 1px solid var(--inter-border); }
+  .q-badge.advanced { background: var(--adv-bg); color: var(--adv); border: 1px solid var(--adv-border); }
+
+  .q-question {
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .q-divider {
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 20px;
+  }
+
+  .q-answer-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .q-answer {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text-2);
+  }
+
+  .q-answer strong { color: var(--text); }
+
+  .q-answer em {
+    font-style: normal;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: #dc2626;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-wrap {
+    margin-top: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid var(--code-border);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  }
+
+  .code-header {
+    background: #0a1628;
+    padding: 9px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .code-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .code-dot:nth-child(1) { background: #ff5f57; }
+  .code-dot:nth-child(2) { background: #febc2e; }
+  .code-dot:nth-child(3) { background: #28c840; }
+
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #4a90d9;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+  }
+
+  .code-block {
+    background: var(--code-bg);
+    padding: 20px 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.75;
+    color: #a8d4ff;
+    margin: 0;
+    white-space: pre;
+  }
+
+  .kw  { color: #569cd6; }
+  .cls { color: #4ec9b0; }
+  .str { color: #ce9178; }
+  .cmt { color: #6a9955; font-style: italic; }
+  .fn  { color: #dcdcaa; }
+  .num { color: #b5cea8; }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .empty .e-icon { font-size: 44px; margin-bottom: 12px; }
+  .empty p { font-size: 15px; }
+
+  /* ── PROGRESS DOTS ── */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 4px 12px;
+    min-height: 28px;
+  }
+
+  .p-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #d1d9f0;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .p-dot.seen { background: #94a3b8; }
+  .p-dot.now  { background: var(--accent); transform: scale(1.5); }
+
+  /* ── NAV BUTTONS ── */
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 22px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    color: var(--text-2);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s;
+    box-shadow: var(--shadow);
+  }
+
+  .nav-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .nav-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    header { padding: 0 16px; }
+    .logo-name { font-size: 16px; }
+    .header-tag { display: none; }
+    .page { padding: 18px 12px 40px; }
+    .q-body { padding: 20px 16px 18px; }
+    .q-question { font-size: 16px; }
+    .cat-tab { padding: 12px 6px; }
+    .cat-tab .cat-label { font-size: 12px; }
+    .nav-btn { padding: 10px 16px; font-size: 13px; }
+    .code-block { font-size: 11.5px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">SF</div>
+    <div class="logo-name">Salesforce<span>Zone</span></div>
+  </div>
+  <div class="header-tag">Interview Prep</div>
+</header>
+
+<div class="page">
+
+  <div class="section-label">Topic</div>
+  <div class="concept-row" id="conceptRow"></div>
+
+  <div class="cat-tabs">
+    <div class="cat-tab" data-cat="basic" onclick="selectCat('basic')">
+      <span class="cat-label">Basic</span>
+      <span class="cat-count" id="cnt-basic">0</span>
+    </div>
+    <div class="cat-tab" data-cat="intermediate" onclick="selectCat('intermediate')">
+      <span class="cat-label">Intermediate</span>
+      <span class="cat-count" id="cnt-intermediate">0</span>
+    </div>
+    <div class="cat-tab" data-cat="advanced" onclick="selectCat('advanced')">
+      <span class="cat-label">Advanced</span>
+      <span class="cat-count" id="cnt-advanced">0</span>
+    </div>
+  </div>
+
+  <div class="q-card" id="qCard">
+    <div class="q-stripe" id="qStripe"></div>
+    <div class="q-body" id="qBody"></div>
+  </div>
+
+  <div class="progress-row" id="progressRow"></div>
+
+  <div class="nav-row" style="margin-top:16px;">
+    <button class="nav-btn" id="prevBtn" onclick="go(-1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+      Previous
+    </button>
+    <button class="nav-btn" id="nextBtn" onclick="go(1)">
+      Next
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  DATA
+// ─────────────────────────────────────────────
+const DB = {
+  "Batch Apex": {
+    basic: [
+      {
+        q: "What is Batch Apex?",
+        a: "It is an asynchronous way to process millions of records in manageable chunks to stay within governor limits.",
+        code: `<span class="kw">public class</span> <span class="cls">MyBatchClass</span> <span class="kw">implements</span> Database.Batchable&lt;sObject&gt; {
+
+    <span class="cmt">// 1. Collect the records to be processed</span>
+    <span class="kw">public</span> Database.QueryLocator <span class="fn">start</span>(Database.BatchableContext BC) {
+        <span class="kw">return</span> Database.<span class="fn">getQueryLocator</span>(<span class="str">'SELECT Id, Name FROM Account'</span>);
+    }
+
+    <span class="cmt">// 2. Process each chunk of records (default 200 at a time)</span>
+    <span class="kw">public void</span> <span class="fn">execute</span>(Database.BatchableContext BC, List&lt;Account&gt; scope) {
+        <span class="kw">for</span>(Account acc : scope) {
+            <span class="cmt">// Your logic here</span>
+        }
+        <span class="fn">update</span> scope;
+    }
+
+    <span class="cmt">// 3. Post-processing logic (runs once at the very end)</span>
+    <span class="kw">public void</span> <span class="fn">finish</span>(Database.BatchableContext BC) {
+        <span class="cmt">// e.g., Send an email or chain another batch</span>
+    }
+}
+
+<span class="cmt">// To Run the Batch:</span>
+<span class="cls">MyBatchClass</span> myBatch = <span class="kw">new</span> <span class="cls">MyBatchClass</span>();
+Database.<span class="fn">executeBatch</span>(myBatch, <span class="num">200</span>);`
+      },
+      {
+        q: "What interface must a Batch Apex class implement?",
+        a: "You must implement the <strong>Database.Batchable</strong> interface."
+      },
+      {
+        q: "Name the three methods in a Batch class.",
+        a: "<strong>start()</strong>, <strong>execute()</strong>, and <strong>finish()</strong>."
+      },
+      {
+        q: "What is the default batch size?",
+        a: "The default is <strong>200 records</strong>."
+      },
+      {
+        q: "What is the maximum batch size?",
+        a: "The maximum is <strong>2,000 records</strong>."
+      },
+      {
+        q: "Why use Batch Apex instead of a standard Trigger?",
+        a: "Triggers have much stricter governor limits (e.g., 50k SOQL records vs. 50 million in Batch)."
+      },
+      {
+        q: "Why use Batch Apex instead of Data Loader?",
+        a: "Use it for custom logic, run-time calculations, or complex transformations that cannot be handled by simple tools."
+      },
+      {
+        q: "What is the purpose of the finish() method?",
+        a: "It runs after all batches are processed and is typically used for post-processing like sending email notifications or chaining another job."
+      },
+      {
+        q: "What return types are allowed in the start() method?",
+        a: "It must return either a <strong>Database.QueryLocator</strong> or an <strong>Iterable</strong>."
+      },
+      {
+        q: "How do you invoke a batch class?",
+        a: "By using <strong>Database.executeBatch(new MyBatchClass(), batchSize);</strong>",
+        code: `Database.<span class="fn">executeBatch</span>(<span class="kw">new</span> <span class="cls">MyBatchClass</span>(), <span class="num">200</span>);`
+      },
+      {
+        q: "What information does Database.BatchableContext provide?",
+        a: "It contains the <strong>Job ID</strong>, which allows you to track the progress of the batch."
+      }
+    ],
+    intermediate: [
+      {
+        q: "QueryLocator vs. Iterable — When to use which?",
+        a: "Use <strong>QueryLocator</strong> for standard SOQL queries (up to 50M records). Use <strong>Iterable</strong> for complex logic or non-SObject data."
+      },
+      {
+        q: "Is Batch Apex stateful by default?",
+        a: "No, it is <strong>stateless</strong>. Member variables reset for every execute transaction."
+      },
+      {
+        q: "How do you maintain state across batches?",
+        a: "Implement the <strong>Database.Stateful</strong> interface so member variables persist across all execute() chunks.",
+        code: `<span class="kw">public class</span> <span class="cls">LeadUpdateBatch</span> <span class="kw">implements</span> Database.Batchable&lt;sObject&gt;, Database.Stateful {
+
+    <span class="kw">public</span> Integer successCount = <span class="num">0</span>;
+    <span class="kw">public</span> Integer failureCount = <span class="num">0</span>;
+
+    <span class="kw">public</span> Database.QueryLocator <span class="fn">start</span>(Database.BatchableContext BC) {
+        <span class="kw">return</span> Database.<span class="fn">getQueryLocator</span>(<span class="str">'SELECT Id FROM Lead'</span>);
+    }
+
+    <span class="kw">public void</span> <span class="fn">execute</span>(Database.BatchableContext BC, List&lt;Lead&gt; scope) {
+        Database.SaveResult[] results = Database.<span class="fn">update</span>(scope, <span class="kw">false</span>);
+        <span class="kw">for</span> (Database.SaveResult sr : results) {
+            <span class="kw">if</span> (sr.<span class="fn">isSuccess</span>()) { successCount++; }
+            <span class="kw">else</span> { failureCount++; }
+        }
+    }
+
+    <span class="kw">public void</span> <span class="fn">finish</span>(Database.BatchableContext BC) {
+        System.<span class="fn">debug</span>(<span class="str">'Successes: '</span> + successCount);
+        System.<span class="fn">debug</span>(<span class="str">'Failures: '</span>  + failureCount);
+    }
+}`
+      },
+      {
+        q: "How can you perform callouts from Batch Apex?",
+        a: "You must implement the <strong>Database.AllowsCallouts</strong> interface on your batch class."
+      },
+      {
+        q: "What is the Apex Flex Queue?",
+        a: "A queue that holds up to <strong>100 batch jobs</strong> in a Holding status before they move to Queued status."
+      },
+      {
+        q: "Can you change the order of jobs in the Flex Queue?",
+        a: "Yes, using <strong>System.FlexQueue.moveBeforeJob()</strong> or <strong>moveAfterJob()</strong>."
+      },
+      {
+        q: "How many batch jobs can run concurrently?",
+        a: "Salesforce allows a maximum of <strong>5 active</strong> (running or queued) batch jobs at once."
+      },
+      {
+        q: "Can you call a future method from Batch Apex?",
+        a: "No. Calling a <strong>@future</strong> method from a batch job will throw: <em>System.AsyncException: Future method cannot be called from a future or batch method</em>"
+      },
+      {
+        q: "Can you call a Queueable job from Batch Apex?",
+        a: "Yes, you can call <strong>one System.enqueueJob()</strong> per execute() or finish() method."
+      },
+      {
+        q: "Can you call one Batch Apex from another?",
+        a: "Yes, but <strong>only from the finish() method</strong>. Calling from start() or execute() throws: <em>System.AsyncException: Database.executeBatch cannot be called from a batch start, batch execute, or future method</em>"
+      },
+      {
+        q: "How do you stop a running batch job?",
+        a: "Use <strong>System.abortJob(jobId);</strong>",
+        code: `System.<span class="fn">abortJob</span>(jobId);`
+      },
+      {
+        q: "What is the maximum number of batch executions per 24 hours?",
+        a: "<strong>250,000</strong> or the number of user licenses multiplied by 200, whichever is greater."
+      },
+      {
+        q: "How many start() methods can run concurrently?",
+        a: "Only <strong>one at a time</strong> across all active batch jobs."
+      },
+      {
+        q: "Can you use FOR UPDATE in a Batch SOQL query?",
+        a: "No. Locking is <strong>automatically handled</strong> by Salesforce for each batch transaction."
+      },
+      {
+        q: "How do you track the status of a batch job?",
+        a: "Query the <strong>AsyncApexJob</strong> object using the Job ID returned when the batch was invoked.",
+        code: `AsyncApexJob job = [
+    SELECT Id, Status, JobItemsProcessed, TotalJobItems, NumberOfErrors
+    FROM AsyncApexJob
+    WHERE Id = :batchJobId
+];`
+      }
+    ],
+    advanced: [
+      {
+        q: "If a record fails in a batch of 200, what happens by default?",
+        a: "The <strong>entire batch of 200 records rolls back</strong>, but other batch chunks continue to process normally."
+      },
+      {
+        q: "How do you ensure only the failing record is rolled back, not the whole chunk?",
+        a: "Use <strong>Database.insert(records, false)</strong> — the allOrNone parameter set to false enables partial success.",
+        code: `Database.SaveResult[] results = Database.<span class="fn">insert</span>(records, <span class="kw">false</span>);
+
+<span class="kw">for</span> (Database.SaveResult sr : results) {
+    <span class="kw">if</span> (!sr.<span class="fn">isSuccess</span>()) {
+        <span class="kw">for</span> (Database.Error err : sr.<span class="fn">getErrors</span>()) {
+            System.<span class="fn">debug</span>(<span class="str">'Error: '</span> + err.<span class="fn">getMessage</span>());
+        }
+    }
+}`
+      },
+      {
+        q: "Can you invoke a Batch class from a Trigger?",
+        a: "Yes, but it is <strong>risky</strong> due to the 5 concurrent job limit. A trigger can fire many times and quickly exceed the limit."
+      },
+      {
+        q: "How do you test Batch Apex?",
+        a: "Enclose execution between <strong>Test.startTest()</strong> and <strong>Test.stopTest()</strong>. All async code runs synchronously after stopTest().",
+        code: `@isTest
+<span class="kw">static void</span> <span class="fn">testBatch</span>() {
+    <span class="cmt">// Insert test data first</span>
+    List&lt;Account&gt; accounts = <span class="kw">new</span> List&lt;Account&gt;();
+    <span class="kw">for</span> (Integer i = <span class="num">0</span>; i &lt; <span class="num">10</span>; i++) {
+        accounts.add(<span class="kw">new</span> <span class="cls">Account</span>(Name = <span class="str">'Test '</span> + i));
+    }
+    <span class="fn">insert</span> accounts;
+
+    Test.<span class="fn">startTest</span>();
+    Database.<span class="fn">executeBatch</span>(<span class="kw">new</span> <span class="cls">MyBatchClass</span>());
+    Test.<span class="fn">stopTest</span>(); <span class="cmt">// Batch runs synchronously here</span>
+
+    <span class="cmt">// Assert results</span>
+}`
+      },
+      {
+        q: "What is the maximum records you can process in a test?",
+        a: "Typically limited to <strong>one batch chunk (~200 records)</strong> to keep it in a single transaction within test limits."
+      },
+      {
+        q: "What is the QueryLocator record limit?",
+        a: "Up to <strong>50 million records</strong> can be retrieved, far beyond SOQL's normal 50,000 limit."
+      },
+      {
+        q: "What happens to Batch jobs during Salesforce maintenance?",
+        a: "Jobs are <strong>held automatically</strong> and resumed once the service is back online — no manual intervention needed."
+      },
+      {
+        q: "How do you track success and failure counts across all batches?",
+        a: "Implement <strong>Database.Stateful</strong> to maintain counter variables, then report the totals in finish()."
+      },
+      {
+        q: "Why can you not use FOR UPDATE in Batch SOQL?",
+        a: "Salesforce <strong>automatically handles record locking</strong> for the batch scope to prevent deadlocks across chunks."
+      },
+      {
+        q: "When should you choose Queueable over Batch Apex?",
+        a: "Use <strong>Queueable</strong> for smaller, chained, or single-context tasks. Use <strong>Batch</strong> when processing large volumes of records (millions)."
+      },
+      {
+        q: "What happens if an unhandled exception occurs in execute()?",
+        a: "The <strong>entire chunk rolls back</strong> and the error is logged in the <strong>AsyncApexJob</strong> record's NumberOfErrors field."
+      },
+      {
+        q: "How do you handle a Mixed DML error in a batch?",
+        a: "Use a <strong>@future method</strong> or separate the DML into distinct transactions — Setup objects (like User) and non-Setup objects cannot be mixed in the same DML context."
+      },
+      {
+        q: "How do you send a summary email of success and failure from a batch?",
+        a: "Use <strong>Database.Stateful</strong> to collect success/failure counts across all chunks, then send an email using <strong>Messaging.sendEmail()</strong> inside finish()."
+      },
+      {
+        q: "How would you design a batch that can restart from a failure point?",
+        a: "Track processed record IDs in a <strong>Database.Stateful</strong> Set, and filter them out in the start() SOQL query so already-processed records are skipped on re-run."
+      },
+      {
+        q: "Can we have duplicate start(), execute(), or finish() methods?",
+        a: "No. You <strong>cannot have duplicate methods</strong> in a single Batch Apex class — it will cause a compile error."
+      },
+      {
+        q: "Can we have additional methods apart from the three required methods?",
+        a: "Yes. You can add <strong>helper methods</strong> freely alongside start(), execute(), and finish()."
+      },
+      {
+        q: "What happens if we do not write a finish() method?",
+        a: "It is <strong>mandatory</strong>. The class will not compile and throws: <em>Class MyBatchClass must implement the method: void Database.Batchable&lt;SObject&gt;.finish(Database.BatchableContext)</em>"
+      }
+    ]
+  }
+};
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let concept  = Object.keys(DB)[0];
+let category = 'basic';
+let idx      = 0;
+let visited  = {};
+
+// ─────────────────────────────────────────────
+//  BOOT
+// ─────────────────────────────────────────────
+function boot() {
+  renderConcepts();
+  selectCat('basic');
+}
+
+// ─────────────────────────────────────────────
+//  CONCEPTS
+// ─────────────────────────────────────────────
+function renderConcepts() {
+  const row = document.getElementById('conceptRow');
+  row.innerHTML = '';
+  Object.keys(DB).forEach(function(name) {
+    var btn = document.createElement('button');
+    btn.className = 'concept-pill' + (name === concept ? ' active' : '');
+    btn.textContent = name;
+    btn.onclick = function() {
+      concept = name;
+      idx = 0;
+      visited = {};
+      renderConcepts();
+      updateCounts();
+      renderQ();
+    };
+    row.appendChild(btn);
+  });
+}
+
+// ─────────────────────────────────────────────
+//  CATEGORIES
+// ─────────────────────────────────────────────
+function selectCat(cat) {
+  category = cat;
+  idx = 0;
+  document.querySelectorAll('.cat-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.cat === cat);
+  });
+  updateCounts();
+  renderQ();
+}
+
+function updateCounts() {
+  var d = DB[concept] || {};
+  document.getElementById('cnt-basic').textContent        = (d.basic        || []).length;
+  document.getElementById('cnt-intermediate').textContent = (d.intermediate || []).length;
+  document.getElementById('cnt-advanced').textContent     = (d.advanced      || []).length;
+}
+
+// ─────────────────────────────────────────────
+//  RENDER QUESTION
+// ─────────────────────────────────────────────
+function renderQ() {
+  var qs   = ((DB[concept] || {})[category]) || [];
+  var body = document.getElementById('qBody');
+  var stripe = document.getElementById('qStripe');
+
+  stripe.className = 'q-stripe ' + category;
+
+  if (qs.length === 0) {
+    body.innerHTML = '<div class="empty"><div class="e-icon">📭</div><p>No questions in this category yet.</p></div>';
+    document.getElementById('progressRow').innerHTML = '';
+    document.getElementById('prevBtn').disabled = true;
+    document.getElementById('nextBtn').disabled  = true;
+    return;
+  }
+
+  if (idx >= qs.length) idx = qs.length - 1;
+  if (idx < 0) idx = 0;
+
+  var q   = qs[idx];
+  var key = concept + '-' + category + '-' + idx;
+  visited[key] = true;
+
+  var catLabel = category.charAt(0).toUpperCase() + category.slice(1);
+
+  var codeHtml = '';
+  if (q.code) {
+    codeHtml =
+      '<div class="code-wrap">' +
+        '<div class="code-header">' +
+          '<div class="code-dots">' +
+            '<div class="code-dot"></div>' +
+            '<div class="code-dot"></div>' +
+            '<div class="code-dot"></div>' +
+          '</div>' +
+          '<span class="code-lang">APEX</span>' +
+        '</div>' +
+        '<pre class="code-block">' + q.code + '</pre>' +
+      '</div>';
+  }
+
+  body.innerHTML =
+    '<div class="q-meta">' +
+      '<span class="q-num">Q' + (idx + 1) + ' of ' + qs.length + ' &nbsp;·&nbsp; ' + concept + '</span>' +
+      '<span class="q-badge ' + category + '">' + catLabel + '</span>' +
+    '</div>' +
+    '<div class="q-question">' + q.q + '</div>' +
+    '<div class="q-divider"></div>' +
+    '<div class="q-answer-label">Answer</div>' +
+    '<div class="q-answer"><p>' + q.a + '</p>' + codeHtml + '</div>';
+
+  // Progress dots
+  var pr = document.getElementById('progressRow');
+  pr.innerHTML = '';
+  qs.forEach(function(_, i) {
+    var d   = document.createElement('div');
+    var k   = concept + '-' + category + '-' + i;
+    d.className = 'p-dot' + (i === idx ? ' now' : (visited[k] ? ' seen' : ''));
+    (function(i2){ d.onclick = function() { idx = i2; renderQ(); }; })(i);
+    pr.appendChild(d);
+  });
+
+  document.getElementById('prevBtn').disabled = (idx === 0);
+  document.getElementById('nextBtn').disabled  = (idx === qs.length - 1);
+}
+
+function go(dir) {
+  var qs = ((DB[concept] || {})[category]) || [];
+  idx = Math.max(0, Math.min(qs.length - 1, idx + dir));
+  renderQ();
+}
+
+boot();
+</script>
+</body>
+</html>
